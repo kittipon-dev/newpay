@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewPay Admin Dashboard</title>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+
+    <link href="/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="shortcut icon" href="images/neware.png" type="image/x-icon">
+    <script>
+        let branch = '<%- branch %>'
+        localStorage.setItem('branch', branch);
+    </script>
+</head>
+
+<body>
+    <div id="app">
+        <div id="sidebar" class='active'>
+            <div class="sidebar-wrapper active">
+                <div class="sidebar-header">
+
+                </div>
+                <div class="sidebar-menu">
+                    <ul class="menu">
+
+
+                        <li class='sidebar-title'>Main Menu</li>
+
+
+                        <li class="sidebar-item active">
+                            <a href="/" class='sidebar-link'>
+                                <i data-feather="home" width="20"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+
+
+                        <li class="sidebar-item  has-sub  ">
+                            <a href="" class='sidebar-link'>
+                                <i data-feather="grid" width="20"></i>
+                                <span>Dashboard สาขา</span>
+                            </a>
+
+                            <ul class="submenu ">
+                                <script>
+                                    const cb = localStorage.getItem("branch")
+                                    for (let index = 1; index <= cb; index++) {
+                                        document.write(`<li>
+                                                        <a href="/dashboard_branch?branch=${index}">สาขา ${index}</a>
+                                                        </li>`)
+                                    }
+                                </script>
+                            </ul>
+
+                        </li>
+
+
+                        <li class="sidebar-item">
+                            <a href="/info_devices" class='sidebar-link'>
+                                <i data-feather="hard-drive" width="20"></i>
+                                <span>ข้อมูล อุปกรณ์</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href="/info_customer" class='sidebar-link'>
+                                <i data-feather="info" width="20"></i>
+                                <span>ข้อมูล ผู้ใช้</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/notrun" class='sidebar-link'>
+                                <i data-feather="alert-triangle" width="20"></i>
+                                <span>Office Device, Alert </span>
+                            </a>
+                        </li>
+
+
+                        <li class="sidebar-item">
+                            <a href="/info_transaction" class='sidebar-link'>
+                                <i data-feather="list" width="20"></i>
+                                <span>Transaction</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href="/logout" class='sidebar-link'>
+                                <i data-feather="log-out" width="20"></i>
+                                <span>ออกจากระบบ</span>
+                            </a>
+                        </li>
+
+
+                    </ul>
+                </div>
+                <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <div id="main">
+
+
+            <nav class="navbar navbar-header navbar-expand navbar-light">
+                <a class="sidebar-toggler" href="#"><span class="navbar-toggler-icon"></span></a>
+                <button class="btn navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </nav>
+
+
+            <div class="main-content container-fluid">
+                <section class="section">
+                    <div class="row mb-2">
+
+                        <div class="col-12 col-md-3">
+                            <div class="card card-statistic">
+                                <div class="card-body p-0">
+                                    <div class="d-flex flex-column">
+                                        <div class='px-3 py-3 d-flex justify-content-between'>
+                                            <h3 class='card-title'>วันนี้</h3>
+                                            <div class="card-right d-flex align-items-center">
+                                                <p><label id="txtTD">0</label> บาท</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <div class="card card-statistic">
+                                <div class="card-body p-0">
+                                    <div class="d-flex flex-column">
+                                        <div class='px-3 py-3 d-flex justify-content-between'>
+                                            <h3 class='card-title'> เดือนนี้</h3>
+                                            <div class="card-right d-flex align-items-center">
+                                                <p><label id="txtTM">0</label> บาท</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <div class="card card-statistic">
+                                <div class="card-body p-0">
+                                    <div class="d-flex flex-column">
+                                        <div class='px-3 py-3 d-flex justify-content-between'>
+                                            <h3 class='card-title'> ทั้งหมด</h3>
+                                            <div class="card-right d-flex align-items-center">
+                                                <p><label id="txtTA">0</label> บาท</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="col-md-12">
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                                        <button type="button" id="btn_b" class="btn btn-primary"
+                                            onclick="t('bar')">Bar</button>
+                                        <button type="button" id="btn_l" class="btn " onclick="t('line')">Line</button>
+                                    </div>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                                        <button type="button" id="d" class="btn btn-primary"
+                                            onclick="getGday()">Day</button>
+                                        <button type="button" id="m" class="btn" onclick="getGmonth()">Month</button>
+                                        <button type="button" id="y" class="btn" onclick="getGyear()">Year</button>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+
+                                    <div class="col-md-12 col-12">
+                                        <canvas id="chart1"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/javascript.util/0.12.12/javascript.util.min.js"></script>
+    <script>
+
+
+        var ctx = document.getElementById('chart1').getContext('2d');
+        ctx.canvas.width = 1000;
+        ctx.canvas.height = 300;
+
+        let dataG = []
+        let txtG = []
+
+        let tD = 0
+        let tM = 0
+        let tA = 0
+
+        getBalance()
+
+        function getBalance() {
+            axios
+                .get("/get_balance")
+                .then(response => {
+                    const data = response.data
+                    document.getElementById('txtTD').innerText = data.d
+                    document.getElementById('txtTM').innerText = data.m
+                    document.getElementById('txtTA').innerText = data.a
+                })
+                .catch(err => {
+
+                })
+        }
+
+        var cfg = {
+            type: 'bar',
+            data: {
+                labels: txtG,
+                datasets: [{
+                    label: 'amount',
+                    data: dataG,
+                    backgroundColor: '#41B1F9',
+                    borderColor: '#41B1F9',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#FFFF',
+                    pointBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        },
+                        gridLines: {
+
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        },
+                        barPercentage: 0.2,
+                        gridLines: {
+                            display: false
+                        }
+                    }]
+
+                },
+
+            }
+        };
+
+
+        var chart = new Chart(ctx, cfg);
+        getGday()
+
+        function t(t) {
+            chart.clear()
+            if (t == 'bar') {
+                document.getElementById('btn_b').classList.add('btn-primary')
+                document.getElementById('btn_l').classList.remove('btn-primary')
+            } else if (t == 'line') {
+                document.getElementById('btn_b').classList.remove('btn-primary')
+                document.getElementById('btn_l').classList.add('btn-primary')
+            }
+            cfg.type = t
+            chart.update()
+        }
+
+
+        function getGday() {
+            axios
+                .get("/g_day")
+                .then(response => {
+                    const data = response.data
+                    console.log(data);
+                    //dataG = []
+                    //txtG = []
+                    for (let index = 0; index < data.length; index++) {
+                        dataG[index] = data[index].amount
+                        txtG[index] = data[index].d + "/" + data[index].m + "/" + data[index].y
+                    }
+                    updataG(dataG, txtG)
+                    document.getElementById('d').classList.add('btn-primary')
+                    document.getElementById('m').classList.remove('btn-primary')
+                    document.getElementById('y').classList.remove('btn-primary')
+                })
+                .catch(err => {
+
+                })
+        }
+        function getGmonth() {
+            axios
+                .get("/g_month")
+                .then(response => {
+                    const data = response.data
+                    console.log(data);
+                    dataG = []
+                    txtG = []
+                    for (let index = 0; index < data.length; index++) {
+                        dataG[index] = data[index].amount
+                        txtG[index] = data[index].m + "/" + data[index].y
+                    }
+                    updataG(dataG, txtG)
+                    document.getElementById('m').classList.add('btn-primary')
+                    document.getElementById('d').classList.remove('btn-primary')
+                    document.getElementById('y').classList.remove('btn-primary')
+                })
+                .catch(err => {
+
+                })
+        }
+        function getGyear() {
+            axios
+                .get("/g_year")
+                .then(response => {
+                    const data = response.data
+                    console.log(data);
+                    dataG = []
+                    txtG = []
+                    for (let index = 0; index < data.length; index++) {
+                        dataG[index] = data[index].amount
+                        txtG[index] =  data[index].y
+                    }
+                    updataG(dataG, txtG)
+                    document.getElementById('y').classList.add('btn-primary')
+                    document.getElementById('d').classList.remove('btn-primary')
+                    document.getElementById('m').classList.remove('btn-primary')
+                })
+                .catch(err => {
+
+                })
+        }
+
+        function updataG(d, t) {
+            cfg.data.datasets[0].data = dataG
+            cfg.data.labels = txtG
+            chart.update()
+        }
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="assets/js/feather-icons/feather.min.js"></script>
+    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="assets/js/app.js"></script>
+
+    <script src="assets/vendors/chartjs/Chart.min.js"></script>
+    <script src="assets/vendors/apexcharts/apexcharts.min.js"></script>
+
+
+
+    <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

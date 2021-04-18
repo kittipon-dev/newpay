@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewPay Admin Dashboard</title>
+
+    <link rel="stylesheet" href="/assets/css/bootstrap.css">
+
+
+
+    <link rel="stylesheet" href="/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="shortcut icon" href="images/neware.png" type="image/x-icon">
+    <script>
+        function jsonEscape(str) {
+            return str.replace(/\n/g, "<br>").replace(/\r/g, "").replace(/\t/g, "\\\\t");
+        }
+        let data = '<%-JSON.stringify(data)%>'
+        let dataUse = JSON.parse(jsonEscape('<%-JSON.stringify(dataUse)%>'));
+        let dd = JSON.parse(jsonEscape(data));
+    </script>
+</head>
+
+<body>
+    <div id="app">
+        <div id="sidebar" class='active'>
+            <div class="sidebar-wrapper active">
+                <div class="sidebar-header">
+                    
+                </div>
+                <div class="sidebar-menu">
+                    <ul class="menu">
+                        <li class='sidebar-title'>Main Menu</li>
+                        <li class="sidebar-item  ">
+                            <a href="/admin" class='sidebar-link'>
+                                <i data-feather="home" width="20"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item ">
+                            <a href="/admin/customer" class='sidebar-link'>
+                                <i data-feather="user" width="20"></i>
+                                <span>Customer Manager</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/admin/device" class='sidebar-link'>
+                                <i data-feather="hard-drive" width="20"></i>
+                                <span>Device Manager</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item active">
+                            <a href="/admin/code" class='sidebar-link'>
+                                <i data-feather="code" width="20"></i>
+                                <span>Code on Device</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/admin/norun" class='sidebar-link'>
+                                <i data-feather="alert-triangle" width="20"></i>
+                                <span>Office Device, Alert</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/admin/logrun" class='sidebar-link'>
+                                <i data-feather="align-left" width="20"></i>
+                                <span>Log Run</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/admin/logt" class='sidebar-link'>
+                                <i data-feather="align-left" width="20"></i>
+                                <span>Log Transaction</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href="/admin/logout" class='sidebar-link'>
+                                <i data-feather="log-out" width="20"></i>
+                                <span>ออกจากระบบ</span>
+                            </a>
+                        </li>
+
+
+
+                    </ul>
+                </div>
+                <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <div id="main">
+
+            <nav class="navbar navbar-header navbar-expand navbar-light" hidden>
+                <a class="sidebar-toggler" href="#"><span class="navbar-toggler-icon"></span></a>
+                <button class="btn navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </nav>
+
+            <div class="main-content container-fluid">
+                <div class="col-md-12">
+
+                    <div class="card">
+                        <div class="card-header">
+
+                        </div>
+
+                        <div class="card-body">
+                            <div class="col-md-12 col-12">
+
+
+                                <center>
+
+                                    <h1 id="verUse"> </h1>
+
+                                    <br>
+                                    <br>
+
+                                    <div class="col-md-6 mb-1">
+                                        <form action="/admin/uploadfilecode" method="post"
+                                            enctype="multipart/form-data">
+
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text">Version </span>
+                                                <input type="text" class="form-control" name="ver">
+                                            </div>
+
+                                            <textarea class="form-control" rows="3" placeholder="Description"
+                                                name="description"></textarea>
+                                            <br>
+
+                                            <input type="file" style="float: left;" class="custom-file-input"
+                                                name="file" id="file">
+
+                                            <button type="submit" class="btn btn-outline-warning"
+                                                style="float: right;">upload</button>
+
+                                        </form>
+                                    </div>
+
+                                    <br>
+                                    <br>
+                                    <br>
+
+                                    <div class="col-md-8 mb-1">
+                                        <!-- Table with outer spacing -->
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Version</th>
+                                                        <th>Date</th>
+                                                        <th>Description</th>
+                                                        <th>Status</th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <script>
+                                                        dd.forEach(e => {
+                                                            //  const time = parseInt(e.date);
+                                                            //  const ts = new Date(time);
+                                                            document.write(`
+                                                    <tr>
+                                                        <td class="text-bold-500">${e.ver}</td>
+                                                        <td>${e.date}</td>
+                                                        <td class="text-bold-500" style="white-space:pre-wrap;">${e.description}</td>
+                                                        <td class="text-bold-500">${e.status}</td>
+                                                        <td>
+                                                            <a href="/admin/del_code_ver?ver=${e.ver}"><i data-feather="trash-2" width="20"></i></a>
+                                                            <a class="btn btn-outline-info" href="/admin/use_code_ver?ver=${e.ver}">Use
+                                                            </a>
+                                                            <a type="button" class="btn btn-outline-success" href="/code_bin/${e.ver}.bin">Download
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                        `)
+                                                        });
+                                                    </script>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </center>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('verUse').innerText = dataUse.ver
+    </script>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/javascript.util/0.12.12/javascript.util.min.js"></script>
+
+
+    <script src="/assets/js/feather-icons/feather.min.js"></script>
+    <script src="/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="/assets/js/app.js"></script>
+
+    <script src="/assets/vendors/chartjs/Chart.min.js"></script>
+    <script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+
+    <script src="/assets/js/main.js"></script>
+
+</body>
+
+</html>

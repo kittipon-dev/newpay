@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewPay Admin Dashboard</title>
+
+    <link rel="stylesheet" href="/assets/css/bootstrap.css">
+
+    <link rel="stylesheet" href="/assets/vendors/chartjs/Chart.min.css">
+
+    <link rel="stylesheet" href="/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="shortcut icon" href="/assets/images/favicon.svg" type="image/x-icon">
+
+    <script>
+        let dd = JSON.parse('<%-JSON.stringify(dataD)%>')
+        const txt = "<%= txt %>"
+        if(txt!=""){
+            alert(txt)
+        }
+    </script>
+
+</head>
+
+<body>
+    <div id="app">
+        <div id="sidebar" class='active'>
+            <div class="sidebar-wrapper active">
+                <div class="sidebar-header">
+                    
+                </div>
+                <div class="sidebar-menu">
+                    <ul class="menu">
+                        <li class='sidebar-title'>Main Menu</li>
+                        <li class="sidebar-item  ">
+                            <a href="/admin" class='sidebar-link'>
+                                <i data-feather="home" width="20"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item ">
+                            <a href="/admin/customer" class='sidebar-link'>
+                                <i data-feather="user" width="20"></i>
+                                <span>Customer Manager</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item active">
+                            <a href="/admin/device" class='sidebar-link'>
+                                <i data-feather="hard-drive" width="20"></i>
+                                <span>Device Manager</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item ">
+                            <a href="/admin/code" class='sidebar-link'>
+                                <i data-feather="code" width="20"></i>
+                                <span>Code on Device</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/admin/norun" class='sidebar-link'>
+                                <i data-feather="alert-triangle" width="20"></i>
+                                <span>Office Device, Alert</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/admin/logrun" class='sidebar-link'>
+                                <i data-feather="align-left" width="20"></i>
+                                <span>Log Run</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/admin/logt" class='sidebar-link'>
+                                <i data-feather="align-left" width="20"></i>
+                                <span>Log Transaction</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href="/admin/logout" class='sidebar-link'>
+                                <i data-feather="log-out" width="20"></i>
+                                <span>ออกจากระบบ</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+                <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <div id="main">
+            <nav class="navbar navbar-header navbar-expand navbar-light">
+                <a class="sidebar-toggler" href="#"><span class="navbar-toggler-icon"></span></a>
+                <button class="btn navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </nav>
+
+
+
+
+            <!--login form Modal -->
+            <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
+                aria-labelledby="myModalLabel33" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="myModalLabel33">สร้าง</h3>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <i data-feather="x"></i>
+                            </button>
+                        </div>
+                        <form class="form" action="/admin/new_device" method="POST">
+                            <div class="modal-body">
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">USER_ID</label>
+                                            <input type="number" class="form-control" id="user_id" name="user_id"
+                                                value="<%= user_id %>" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">ร้านที่</label>
+                                            <input type="number" class="form-control" id="number-shop" name="group"
+                                                value="01"
+                                                onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">เครื่องที่</label>
+                                            <input type="number" class="form-control" id="number-device" name="name"
+                                                value="01"
+                                                onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 ">
+                                        <label for="">ราคาที่ 1</label>
+                                        <div class="">
+                                            <div class="form-group">
+                                                <input type="number" class="form-control" placeholder="Price"
+                                                    name="price1">
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            <div class="form-group">
+                                                <input type="number" class="form-control" placeholder="Pulse"
+                                                    name="pulse1">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 ">
+                                        <label for="">ราคาที่ 2</label>
+                                        <div class="">
+                                            <div class="form-group">
+                                                <input type="number" class="form-control" placeholder="Price"
+                                                    name="price2">
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            <div class="form-group">
+                                                <input type="number" class="form-control" placeholder="Pulse"
+                                                    name="pulse2">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 ">
+                                        <label for="">ราคาที่ 3</label>
+                                        <div class="">
+                                            <div class="form-group">
+                                                <input type="number" class="form-control" placeholder="Price"
+                                                    name="price3">
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            <div class="form-group">
+                                                <input type="number" class="form-control" placeholder="Pulse"
+                                                    name="pulse3">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                    <i class="bx bx-x d-block d-sm-none"></i>
+                                    <span class="d-none d-sm-block">Close</span>
+                                </button>
+                                <button type="submit" class="btn btn-primary ml-1">
+                                    <i class="bx bx-check d-block d-sm-none"></i>
+                                    <span class="d-none d-sm-block">Submit</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="main-content container-fluid">
+
+                <div class="buttons">
+                    <button type="button" style="float: left;" class="btn btn-outline-success" data-bs-toggle="modal"
+                        data-bs-target="#inlineForm">New and Modify Device</button>
+                    
+                        <a href="/esp/esp_okAdminAll?user_id=<%= user_id %>" class="btn btn-outline-warning">ทอสอบการเชื่อมต่อ ทั้งหมด</a>
+
+                        <a href="/esp/esp_rAdminAll?user_id=<%= user_id %>" class="btn btn-outline-danger">reboot ทั้งหมด</a>
+                </div>
+                <br>
+                <div class="card collapse-icon accordion-icon-rotate">
+
+                    <div class="card-header">
+                        <h1 class="card-title pl-1">USER_ID : <%= user_id %>
+                        </h1>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <script>
+                                dd.forEach(e => {
+                                    document.write(`
+                            <div class="accordion" id="cardAccordion${e.dname}">
+                                <div class="card">
+                                    <div class="card-header " id="headingOne" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseOne${e.dname}" aria-expanded="false" aria-controls="collapseOne"
+                                        role="button">
+                                        <i class="text-success" data-feather="circle" width="20"></i>
+                                        <span class="collapsed collapse-title">Device Name : ${e.dname}</span>
+                                        <div style="float: right;">
+                                        </div>
+                                    </div>
+                                    <div id="collapseOne${e.dname}" class="collapse pt-1" aria-labelledby="headingOne"
+                                        data-parent="#cardAccordion${e.dname}">
+                                        <div class="card-body">
+                                            <div class="buttons">
+                                                <a href="/admin/del_device?user_id=${e.user_id}&dname=${e.dname}" class="text-danger"><i data-feather="trash-2" width="20"></i></a>                                    
+                                                <a href="/esp/esp_okAdmin?dname=${e.dname}&user_id=${e.user_id}" class="btn btn-outline-warning">ทอสอบการเชื่อมต่อ</a>
+                                                <a href="/esp/esp_rAdmin?dname=${e.dname}&user_id=${e.user_id}" class="btn btn-outline-secondary">reboot</a>
+                                            </div>
+                                            <code class="p-2">
+                                                ${JSON.stringify(e)}
+                                            </code>
+                                            <p>
+                                            <div class="row match-height">
+                                                <div class="col-8">
+                                                    <div class="card-group">
+                                                        <div class="card">
+                                                            <div class="card-content">
+                                                                <img class="card-img-top img-fluid"
+                                                                    src="/qrimage/${e.user_id}/${e.dname}-p1.png"
+                                                                    alt="Card image cap">
+                                                                <div class="card-body">
+                                                                    <h4 class="card-title">Pirce1: ${e.price1}</h4>
+                                                                    <a href="/admin/new_qr?dname=${e.dname}&user_id=<%= user_id %>&p=1&price=${e.price1}" class="btn btn-outline-info">สร้าง QRcode</a>
+                                                                    <p class="card-text"></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card">
+                                                            <div class="card-content">
+                                                                <img class="card-img-top img-fluid"
+                                                                    src="/qrimage/${e.user_id}/${e.dname}-p2.png"
+                                                                    alt="Card image cap" />
+                                                                <div class="card-body">
+                                                                    <h4 class="card-title">Pirce2: ${e.price2}</h4>
+                                                                    <a href="/admin/new_qr?dname=${e.dname}&user_id=<%= user_id %>&p=2&price=${e.price2}" class="btn btn-outline-info">สร้าง QRcode</a>
+                                                                    <p class="card-text">
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card">
+                                                            <div class="card-content">
+                                                                <img class="card-img-top img-fluid"
+                                                                    src="/qrimage/${e.user_id}/${e.dname}-p3.png"
+                                                                    alt="Card image cap">
+                                                                <div class="card-body">
+                                                                    <h4 class="card-title">Pirce3: ${e.price3}</h4>
+                                                                    <a href="/admin/new_qr?dname=${e.dname}&user_id=<%= user_id %>&p=3&price=${e.price3}" class="btn btn-outline-info">สร้าง QRcode</a>
+                                                                    <p class="card-text">
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                       `)
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+    <script src="/assets/js/feather-icons/feather.min.js"></script>
+    <script src="/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="/assets/js/app.js"></script>
+
+    <script src="/assets/vendors/chartjs/Chart.min.js"></script>
+    <script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
+
+    <script src="/assets/js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewPay Admin Dashboard</title>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+
+    <link rel="stylesheet" href="assets/vendors/chartjs/Chart.min.css">
+
+    <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="shortcut icon" href="images/neware.png" type="image/x-icon">
+</head>
+
+<body>
+    <div id="app">
+        <div id="sidebar" class='active'>
+            <div class="sidebar-wrapper ">
+                <div class="sidebar-header">
+                    
+                </div>
+                <div class="sidebar-menu">
+                    <ul class="menu">
+
+                        <li class='sidebar-title'>Main Menu</li>
+
+                        <li class="sidebar-item  ">
+                            <a href="/" class='sidebar-link'>
+                                <i data-feather="home" width="20"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item  has-sub active">
+                            <a class='sidebar-link'>
+                                <i data-feather="grid" width="20"></i>
+                                <span>Tools</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li>
+                                    <a href="/newdevice"><i data-feather="plus-square" width="20"></i> New Device</a>
+                                </li>
+                                <li>
+                                    <a href="/newqrcode"><i data-feather="image" width="20"></i> New QRcode</a>
+                                </li>
+                                <li>
+                                    <a href="/newcustomer"><i data-feather="user-plus" width="20"></i> New Customer</a>
+                                </li>
+                            </ul>
+                        </li>
+
+
+                        <li class="sidebar-item ">
+                            <a href="/customer" class='sidebar-link'>
+                                <i data-feather="user" width="20"></i>
+                                <span>Customer Manager</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/device" class='sidebar-link'>
+                                <i data-feather="hard-drive" width="20"></i>
+                                <span>Device Manager</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item ">
+                            <a href="/code" class='sidebar-link'>
+                                <i data-feather="code" width="20"></i>
+                                <span>Code on Device</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/norun" class='sidebar-link'>
+                                <i data-feather="alert-triangle" width="20"></i>
+                                <span>Office Device, Alert</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/logrun" class='sidebar-link'>
+                                <i data-feather="align-left" width="20"></i>
+                                <span>Log Run</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/logt" class='sidebar-link'>
+                                <i data-feather="align-left" width="20"></i>
+                                <span>Log Transaction</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href="/logout" class='sidebar-link'>
+                                <i data-feather="log-out" width="20"></i>
+                                <span>ออกจากระบบ</span>
+                            </a>
+                        </li>
+
+
+
+                    </ul>
+                </div>
+                <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <div id="main">
+            <nav class="navbar navbar-header navbar-expand navbar-light">
+                <a class="sidebar-toggler" href="#"><span class="navbar-toggler-icon"></span></a>
+                <button class="btn navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </nav>
+
+            <div class="main-content container-fluid">
+
+                <div class="page-title">
+                    <div class="row">
+                        <div class="col-12 col-md-6 order-md-1 order-last">
+                            <h3>New Device</h3>
+                            <p></p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- // Basic multiple Column Form section start -->
+                <section id="multiple-column-form">
+                    <div class="row match-height">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body">
+
+
+
+                                        <!-- -------------------------------------------------------------- -->
+
+                                        <ul class="list-group list-group-flush">
+                                            <form class="form" action="/new_device" method="POST">
+                                                <li class="list-group-item">
+
+                                                    <div class="row">
+                                                        <div class="">
+                                                            <h4 class="card-title">สร้าง</h4>
+                                                        </div>
+
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <label for="">USER_ID</label>
+                                                                <input type="number" class="form-control" id="user_id" name="user_id">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <label for="">ร้านที่</label>
+                                                                <input type="number" class="form-control"
+                                                                    id="number-shop" name="group" value="1">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <label for="">เครื่องที่</label>
+                                                                <input type="number" class="form-control"
+                                                                    id="number-device" value="1" >
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <br>
+                                                            <button type="button" class="btn btn-primary"
+                                                                onclick="create()">Create </button>
+                                                        </div>
+
+
+
+                                                    </div>
+                                                </li>
+
+
+
+                                                <ul id="list-device"></ul>
+
+                                                <script>
+                                                    function create() {
+
+                                                        var h = document.getElementById("list-device");
+
+                                                        h.innerHTML = ""
+
+                                                        const l = document.getElementById('number-device').value
+
+                                                        const g = document.getElementById('number-shop').value
+                                                        const uid = document.getElementById('user_id').value
+                                                        let gg = ""
+                                                        if (g < 10) {
+                                                            gg = "0" + g
+                                                        } else {
+                                                            gg = g
+                                                        }
+                                                        let num
+
+                                                        for (let index = 1; index <= l; index++) {
+
+                                                            if (index < 10) {
+                                                                num = "0" + index
+                                                            } else {
+                                                                num = index
+                                                            }
+
+                                                            h.insertAdjacentHTML("afterbegin", `<li class="list-group-item">
+                                                    <br>
+                                                    <div class="form-group w-25">
+                                                        <label>Device Name</label>
+                                                        <input type="text" class="form-control" readonly="readonly"
+                                                            name="dname" value="${uid}${gg}${num}">
+                                                    </div>
+                                                    <br>
+                                                    <div class="row">
+
+                                                        <div class="col-md-4 border">
+                                                            <h5>ราคาที่ 1</h5>
+                                                            <div class="">
+                                                                <div class="form-group">
+                                                                    <input type="number" class="form-control"
+                                                                        placeholder="Price" name="price1">
+                                                                </div>
+                                                            </div>
+                                                            <div class="">
+                                                                <div class="form-group">
+                                                                    <input type="number" class="form-control"
+                                                                        placeholder="Pulse" name="pulse1">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-4 border">
+                                                            <h5>ราคาที่ 2</h5>
+                                                            <div class="">
+                                                                <div class="form-group">
+                                                                    <input type="number" class="form-control"
+                                                                        placeholder="Price" name="price2">
+                                                                </div>
+                                                            </div>
+                                                            <div class="">
+                                                                <div class="form-group">
+                                                                    <input type="number" class="form-control"
+                                                                        placeholder="Pulse" name="pulse2">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-4 border">
+                                                            <h5>ราคาที่ 3</h5>
+                                                            <div class="">
+                                                                <div class="form-group">
+                                                                    <input type="number" class="form-control"
+                                                                        placeholder="Price" name="price3">
+                                                                </div>
+                                                            </div>
+                                                            <div class="">
+                                                                <div class="form-group">
+                                                                    <input type="number" class="form-control"
+                                                                        placeholder="Pulse" name="pulse3">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </li>
+                                                            `);
+                                                        }
+
+
+                                                    }
+
+                                                </script>
+
+
+                                                <div class="col-12 d-flex justify-content-end">
+                                                    <button type="submit"
+                                                        class="btn btn-primary me-1 mb-1">Submit</button>
+                                                    <button type="reset"
+                                                        class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                                                </div>
+                                            </form>
+                                        </ul>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- // Basic multiple Column Form section end -->
+            </div>
+
+        </div>
+    </div>
+    <script src="assets/js/feather-icons/feather.min.js"></script>
+    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="assets/js/app.js"></script>
+
+    <script src="assets/vendors/chartjs/Chart.min.js"></script>
+    <script src="assets/vendors/apexcharts/apexcharts.min.js"></script>
+
+
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

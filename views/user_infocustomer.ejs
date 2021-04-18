@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewPay Admin Dashboard</title>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+
+    <link rel="stylesheet" href="assets/vendors/chartjs/Chart.min.css">
+
+    <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="shortcut icon" href="images/neware.png" type="image/x-icon">
+    <script>
+        let dd = JSON.parse('<%-JSON.stringify(data)%>')
+        let alertText = '<%-alert%>'
+        if(alertText!=""){
+            alert(alertText)
+            window.location.replace('/info_customer');
+        }
+    </script>
+</head>
+
+<body>
+    <div id="app">
+        <div id="sidebar" class='active'>
+            <div class="sidebar-wrapper active">
+                <div class="sidebar-header">
+
+                </div>
+                <div class="sidebar-menu">
+                    <ul class="menu">
+
+
+                        <li class='sidebar-title'>Main Menu</li>
+
+
+                        <li class="sidebar-item ">
+                            <a href="/" class='sidebar-link'>
+                                <i data-feather="home" width="20"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+
+
+                        <li class="sidebar-item  has-sub  ">
+                            <a href="" class='sidebar-link'>
+                                <i data-feather="grid" width="20"></i>
+                                <span>Dashboard สาขา</span>
+                            </a>
+
+                            <ul class="submenu ">
+                                <script>
+                                    const cb = localStorage.getItem("branch")
+                                    for (let index = 1; index <= cb; index++) {
+                                        document.write(`<li>
+                                                        <a href="/dashboard_branch?branch=${index}">สาขา ${index}</a>
+                                                        </li>`)
+                                    }
+                                </script>
+                            </ul>
+
+                        </li>
+
+
+                        <li class="sidebar-item">
+                            <a href="/info_devices" class='sidebar-link'>
+                                <i data-feather="hard-drive" width="20"></i>
+                                <span>ข้อมูล อุปกรณ์</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item active">
+                            <a href="/info_customer" class='sidebar-link'>
+                                <i data-feather="info" width="20"></i>
+                                <span>ข้อมูล ผู้ใช้</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/notrun" class='sidebar-link'>
+                                <i data-feather="alert-triangle" width="20"></i>
+                                <span>Office Device, Alert </span>
+                            </a>
+                        </li>
+
+
+                        <li class="sidebar-item">
+                            <a href="/info_transaction" class='sidebar-link'>
+                                <i data-feather="list" width="20"></i>
+                                <span>Transaction</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href="/logout" class='sidebar-link'>
+                                <i data-feather="log-out" width="20"></i>
+                                <span>ออกจากระบบ</span>
+                            </a>
+                        </li>
+
+
+                    </ul>
+                </div>
+                <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+            </div>
+        </div>
+
+        <!--login form Modal -->
+        <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="myModalLabel33">เปลี่ยนรหัสผ่าน</h3>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+                    <form class="form" action="/newpassword" method="POST">
+                        <div class="modal-body">
+                            <div class="">
+                                <div class="form-group">
+                                    <label for="">รหัสผ่านปัจจุบัน</label>
+                                    <input type="password"  class="form-control" name="oldpass" required>
+                                </div>
+                            </div>
+                            <div class="">
+                                <div class="form-group">
+                                    <label for="">รหัสผ่านใหม่</label>
+                                    <input type="password" class="form-control" name="newpass" required>
+                                </div>
+                            </div>
+                            <div class="">
+                                <div class="form-group">
+                                    <label for="">ยืนยันรหัสผ่าน</label>
+                                    <input type="password" class="form-control" name="cpass" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                <i class="bx bx-x d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Close</span>
+                            </button>
+                            <button type="submit" class="btn btn-primary ml-1">
+                                <i class="bx bx-check d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">บันทึกการเปลี่ยนแปลง</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!--login form Modal -->
+        <div class="modal fade text-left" id="mail" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       <h1>Mail: support@neware.dev</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="main">
+
+            <nav class="navbar navbar-header navbar-expand navbar-light">
+                <a class="sidebar-toggler" href="#"><span class="navbar-toggler-icon"></span></a>
+                <button class="btn navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </nav>
+
+
+
+            <div class="main-content container-fluid">
+                <div class="buttons">
+                    <button type="button" style="float: left;" class="btn btn-outline-secondary" data-bs-toggle="modal"
+                        data-bs-target="#inlineForm">เปลี่ยนรหัสผ่าน</button>
+
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
+                    data-bs-target="#mail">แจ้งเปลี่ยนข้อมูล</button>
+
+                </div>
+
+                <div class="col-12">
+
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <!-- -------------------------------------------------------------- -->
+                                <ul class="list-group list-group-flush">
+
+                                    <li class="list-group-item">
+
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <h4 class="card-title">การเข้าใช้งาน</h4>
+                                            </div>
+
+                                            <div class="form-check col-sm-3">
+                                                <input class="form-check-input" type="radio" name="package" id="test"
+                                                    value="test" readonly>
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    ทดลองใช้งาน
+                                                </label>
+                                            </div>
+                                            <div class="form-check col-sm-3">
+                                                <input class="form-check-input" type="radio" name="package"
+                                                    id="package1" value="package1" readonly>
+                                                <label class="form-check-label" for="flexRadioDefault2">
+                                                    ชำระเงินแล้ว
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group has-icon-left">
+                                                    <label for="email-id-icon">Email</label>
+                                                    <div class="position-relative">
+                                                        <input type="email" class="form-control" placeholder="Email"
+                                                            id="email" name="email" required readonly>
+                                                        <div class="form-control-icon">
+                                                            <i data-feather="mail"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li class="list-group-item">
+                                        <br>
+                                        <h4 class="card-title">ติดต่อ</h4>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label>เบอร์ผู้ติดต่อ</label>
+                                                    <input type="text" class="form-control" id="phone_number"
+                                                        name="phone_number" required readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label>เมล์</label>
+                                                    <input type="email" class="form-control" id="mail_contact"
+                                                        name="mail_contact" required readonly>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <br>
+                                        <h4 class="card-title">การรับเงิน</h4>
+                                        <br>
+                                        <div class="row">
+                                            <h6>บัญชี รับเงิน</h6>
+                                            <div class="col-sm-3 mb-4">
+
+                                                <div class="input-group mb-3">
+                                                    <label class="input-group-text"
+                                                        for="inputGroupSelect01">ธนคาร</label>
+                                                    <select class="form-select" name="bank" readonly>
+                                                        <option id="bank" selected>Choose...</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-4">
+                                                <div class="form-group">
+                                                    <input type="text" id="bank_number" class="form-control"
+                                                        name="bank_number" id="bank_number" placeholder="เลขบัญชี"
+                                                        required readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-4">
+                                                <div class="form-group">
+                                                    <input type="text" id="bank_name" class="form-control"
+                                                        name="bank_name" id="bank_name" placeholder="ชื่อบัญชี" required
+                                                        readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <br>
+                                        <h4 class="card-title">ข้อมูล สำคัญอื่นๆ</h4>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="first-name-column">ชื่อจริง</label>
+                                                    <input type="text" id="fname" class="form-control" name="fname"
+                                                        required readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="last-name-column">นามสกุล</label>
+                                                    <input type="text" id="lname" class="form-control" name="lname"
+                                                        required readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label>เลขประจำตัวผู้เสียภาษี</label>
+                                                    <input type="text" class="form-control" id="identification_number"
+                                                        name="identification_number" required readonly>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group mb-3">
+                                                <label for="exampleFormControlTextarea1"
+                                                    class="form-label">ที่อยู่</label>
+                                                <textarea class="form-control" rows="3" name="address" id="address"
+                                                    required readonly></textarea>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById(dd.package).checked = true
+        document.getElementById('email').value = dd.email
+        document.getElementById('phone_number').value = dd.phone_number
+        document.getElementById('mail_contact').value = dd.mail_contact
+        document.getElementById('bank').innerText = dd.bank
+        document.getElementById('bank_number').value = dd.bank_number
+        document.getElementById('bank_name').value = dd.bank_name
+        document.getElementById('fname').value = dd.fname
+        document.getElementById('lname').value = dd.lname
+        document.getElementById('identification_number').value = dd.identification_number
+        document.getElementById('address').value = dd.address
+    </script>
+
+
+
+
+    <script src="assets/js/feather-icons/feather.min.js"></script>
+    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="assets/js/app.js"></script>
+
+    <script src="assets/vendors/chartjs/Chart.min.js"></script>
+    <script src="assets/vendors/apexcharts/apexcharts.min.js"></script>
+
+
+
+    <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

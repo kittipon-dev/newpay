@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewPay Admin Dashboard</title>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+
+    <link rel="stylesheet" href="assets/vendors/chartjs/Chart.min.css">
+
+    <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="shortcut icon" href="images/neware.png" type="image/x-icon">
+    <script>
+        let dd = JSON.parse('<%-JSON.stringify(data)%>')
+    </script>
+
+</head>
+
+<body>
+    <div id="app">
+        <div id="sidebar" class='active'>
+            <div class="sidebar-wrapper active">
+                <div class="sidebar-header">
+
+                </div>
+                <div class="sidebar-menu">
+                    <ul class="menu">
+
+
+                        <li class='sidebar-title'>Main Menu</li>
+
+
+                        <li class="sidebar-item ">
+                            <a href="/" class='sidebar-link'>
+                                <i data-feather="home" width="20"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+
+
+                        <li class="sidebar-item  has-sub  ">
+                            <a href="" class='sidebar-link'>
+                                <i data-feather="grid" width="20"></i>
+                                <span>Dashboard สาขา</span>
+                            </a>
+
+                            <ul class="submenu ">
+                                <script>
+                                    const cb = localStorage.getItem("branch")
+                                    for (let index = 1; index <= cb; index++) {
+                                        document.write(`<li>
+                                                        <a href="/dashboard_branch?branch=${index}">สาขา ${index}</a>
+                                                        </li>`)
+                                    }
+                                </script>
+                            </ul>
+
+                        </li>
+
+
+                        <li class="sidebar-item active">
+                            <a href="/info_devices" class='sidebar-link'>
+                                <i data-feather="hard-drive" width="20"></i>
+                                <span>ข้อมูล อุปกรณ์</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href="/info_customer" class='sidebar-link'>
+                                <i data-feather="info" width="20"></i>
+                                <span>ข้อมูล ผู้ใช้</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item ">
+                            <a href="/notrun" class='sidebar-link'>
+                                <i data-feather="alert-triangle" width="20"></i>
+                                <span>Office Device, Alert </span>
+                            </a>
+                        </li>
+
+
+                        <li class="sidebar-item">
+                            <a href="/info_transaction" class='sidebar-link'>
+                                <i data-feather="list" width="20"></i>
+                                <span>Transaction</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href="/logout" class='sidebar-link'>
+                                <i data-feather="log-out" width="20"></i>
+                                <span>ออกจากระบบ</span>
+                            </a>
+                        </li>
+
+
+                    </ul>
+                </div>
+                <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <div id="main">
+
+            <nav class="navbar navbar-header navbar-expand navbar-light">
+                <a class="sidebar-toggler" href="#"><span class="navbar-toggler-icon"></span></a>
+                <button class="btn navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </nav>
+
+            <div class="main-content container-fluid">
+
+                <div class="buttons">
+                    <a href="/esp/esp_okAll?" class="btn btn-warning">ทอสอบการเชื่อมต่อ ทั้งหมด</a>
+
+                    <a href="/esp/esp_rAll?" class="btn btn-danger">reboot ทั้งหมด</a>
+                </div>
+
+                <!-- Table head options start -->
+                <div class="row" id="table-head">
+                    <div class="col-12">
+                        <div class="card">
+
+                            
+
+                            <div class="card-content">
+                                <!-- table head dark -->
+                                <div class="table-responsive">
+                                    <table class="table mb-0">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>Group Shop</th>
+                                                <th>Device Name</th>
+                                                <th>STATUS</th>
+                                                <th>ACTION</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tb">
+                                            <script>
+                                                dd.forEach(e => {
+                                                    document.write(`
+                                                <tr class="unread">
+                                            <td>
+                                                <h6 class="mb-1">${e.group}</h6>
+                                            </td>
+                                            <td>
+                                                <h6 class="mb-1">${e.dname}</h6>
+                                            </td>
+                                            <td>
+                                                <h6 class="mb-1">${e.status}</h6>
+                                            </td>
+                                            <td >
+                                                <a href="/viewqrcode?dname=${e.dname}" class="btn btn-outline-success" >QRcode</a>
+                                                <a href="/esp/esp_ok?dname=${e.dname}" class="btn btn-outline-warning">ทอสอบการเชื่อมต่อ</a>
+                                                <a href="/esp/esp_r?dname=${e.dname}" class="btn btn-outline-danger">reboot</a>
+                                            </td>
+                                        </tr>`)
+                                                });
+                                            </script>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!--large size Modal -->
+            <div class="modal fade text-left" id="large" tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel17" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+                role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel17">Large Modal</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        I love tart cookie cupcake. I love chupa chups biscuit. I
+                        love marshmallow apple pie wafer
+                        liquorice. Marshmallow cotton candy chocolate. Apple pie
+                        muffin tart. Marshmallow halvah pie
+                        marzipan lemon drops jujubes. Macaroon sugar plum cake icing
+                        toffee.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary"
+                            data-bs-dismiss="modal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="button" class="btn btn-primary ml-1"
+                            data-bs-dismiss="modal">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Accept</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Modal Xl size -->
+
+            <!--Basic Modal -->
+            <div class="modal fade text-left w-100" id="default" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable" role="document">
+                    <div class="modal-content ">
+                        <div class="modal-body">
+                            <div class=" ">
+                                <div class="card-content">
+                                    <div>
+                                        <img class="" style="float: left;" width="300"
+                                            src="/qrimage/1001/10010101-p1.png">
+                                        <div style="float: right;">
+                                            <h3>ราคา 0</h3>
+                                            <h3>Pulse 10</h3>
+                                            <i>41854561324841</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="">
+                                <div class="-content">
+                                    <div>
+                                        <img class="" style="float: left;" width="300"
+                                            src="/qrimage/1001/10010101-p1.png">
+                                        <h3 style="float: right;">รายละเอียด</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="">
+                                <div class="-content">
+                                    <div>
+                                        <img class="" style="float: left;" width="300"
+                                            src="/qrimage/1001/10010101-p1.png">
+                                        <h3 style="float: right;">รายละเอียด</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+    <script src="assets/js/feather-icons/feather.min.js"></script>
+    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="assets/js/app.js"></script>
+
+    <script src="assets/vendors/chartjs/Chart.min.js"></script>
+    <script src="assets/vendors/apexcharts/apexcharts.min.js"></script>
+
+
+
+    <script src="assets/js/main.js"></script>
+
+
+
+</body>
+
+</html>
