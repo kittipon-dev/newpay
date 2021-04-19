@@ -1,9 +1,10 @@
-ssh dev@35.198.221.243
+ssh Administrator@3.1.113.254
 
-~,t_;yed%eI.c8_
+Xg99(VN;3S@UBenOkrSrGSet8$?Ag39x
 
-cd Desktop/newpay/newpay-admin
-cd Desktop/newpay/newpay-user
-cd Desktop/newpay/ServerNewpay
+cd Desktop/newpay
 
 npm run dev
+
+
+

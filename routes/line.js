@@ -17,7 +17,6 @@ const client = new line.Client(config);
 // register a webhook handler with middleware
 // about the middleware, please refer to doc
 router.post('/callback', (req, res) => {
-  //console.log(req.body);
   Promise
     .all(req.body.events.map(handleEvent))
     .then((result) => res.json(result))
@@ -40,15 +39,34 @@ function handleEvent(event) {
     const echo = { type: 'text', text: event.source.userId };
     return client.replyMessage(event.replyToken, echo)
   }
-  //console.log(event.message.test);
+  
+  if (event.message.text == 'รายได้' || event.message.text == 'Uid') {
+    // console.log(event);
+    const echo = { type: 'text', text: event.source.userId };
+    return client.replyMessage(event.replyToken, echo)
+  }
+
+  if (event.message.text == 'กราฟ' || event.message.text == 'Uid') {
+    // console.log(event);
+    const echo = { type: 'text', text: event.source.userId };
+    return client.replyMessage(event.replyToken, echo)
+  }
+
+  if (event.message.text == 'อุปกร์' || event.message.text == 'Uid') {
+    // console.log(event);
+    const echo = { type: 'text', text: event.source.userId };
+    return client.replyMessage(event.replyToken, echo)
+  }
 
   // create a echoing text message
 
-  client.pushMessage('Ufe6e99510c9aa012be3d116b24127db6', { type: 'text', text: 'hello, world' });
+  //client.pushMessage('Ufe6e99510c9aa012be3d116b24127db6', { type: 'text', text: 'hello, world' });
 
   // use reply API
   //return client.replyMessage(event.replyToken, echo);
   //return client.replyMessage(event.replyToken, echo);
+  console.log("send ok");
+
 }
 
 

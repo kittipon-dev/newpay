@@ -11,6 +11,7 @@ const RUN = require('../models/RUN')
 const TM = require('../models/TM')
 const Code_device = require('../models/Code_device')
 
+
 const mongoose = require('mongoose');
 mongoose.set('useCreateIndex', true)
 mongoose.connect('mongodb://localhost:27017/newpay', {
@@ -130,6 +131,17 @@ router.post('/newcustomer', ifNotLoggedinAdmin, async function (req, res, next) 
   } catch (error) {
     res.render('admin_new-customer', { e: "Have a Problem " })
   }
+});
+
+/* GET customer page. */
+router.get('/line', ifNotLoggedinAdmin, async function (req, res, next) {
+  const dbUser = await User.find({})
+  res.render('admin_line', { data: dbUser });
+});
+router.post('/update_uid', ifNotLoggedinAdmin, async function (req, res, next) {
+  const dbUser = await User.findOneAndUpdate({ user_id: req.body.user_id },
+    { $set: { uid_line: req.body.uid } })
+  res.redirect('/admin/line')
 });
 
 /* GET customer page. */
