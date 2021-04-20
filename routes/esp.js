@@ -31,6 +31,7 @@ router.get('/get_dname', async (req, res) => {
     }
 })
 const path = require('path')
+const Run = require('../models/RUN')
 router.get('/getbin', async (req, res) => {
     const dbCodedeviceUse = await Code_device.findOne({ status: "use" })
     console.log(dbCodedeviceUse);
@@ -117,7 +118,7 @@ async function esp_r(dname) {
 }
 
 client.on('connect', function () {
-    client.subscribe('MainServer', function (err) {
+    client.subscribe('payok', function (err) {
         if (!err) {
             // client.publish('test', 'Hello mqtt')
         }
@@ -130,29 +131,17 @@ client.on('connect', function () {
 })
 
 
-client.on('message', function (topic, message) {
-    if (topic == "MainServer") {
-        const str = JSON.parse(message.toString())
-        console.log("main");
+client.on('message', async function (topic, message) {
+    if (topic == "payok") {
+        const str = message.toString().split('&&')
+        const dbRun = await Run.findOneAndUpdate(
+            { nonce_str: str[1] },
+            { $set: { run: true } })
     } else if (topic == "MainServerOK") {
         returnOK(message)
     }
 })
 
-
-/*
-function send_Newpay(c, d) {
-    const myobj = {
-        c: c,
-        data: d
-    }
-
-    client.send(Buffer.from(JSON.stringify(myobj)), (err) => {
-        client.close();
-    });
-
-}
-*/
 
 async function returnOK(d) {
     console.log("ok");
@@ -162,5 +151,8 @@ async function returnOK(d) {
 }
 
 
+
+
 module.exports = router;
+
 

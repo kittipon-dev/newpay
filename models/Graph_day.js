@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const gSchema = new Schema({
     user_id: Number,
-    shop: Number,
+    branch: Number,
     time: String,
     amount: Number,
     d: Number,

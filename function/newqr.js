@@ -13,7 +13,7 @@ const dayjs = require('dayjs')
 const appid = "mch35306";
 const channel = "bbl_promptpay";
 const feeType = "THB";
-const notify_url = "http://18.140.255.41/notify_pay.php";
+const notify_url = "https://ksher.newpay.dev/";
 
 
 const privateKey = `-----BEGIN RSA PRIVATE KEY-----

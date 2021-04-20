@@ -8,3 +8,4 @@ npm run dev
 
 
 
+taskkill /IM "node.exe" /f

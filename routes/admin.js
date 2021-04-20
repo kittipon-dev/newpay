@@ -20,13 +20,13 @@ mongoose.connect('mongodb://localhost:27017/newpay', {
   useUnifiedTopology: true
 });
 
-const qr = require('./newqr');
+const qr = require('../function/newqr');
 
 var express = require('express');
 var router = express.Router();
 
 const dayjs = require('dayjs')
-
+//
 
 const path = require('path');
 const cookieSession = require('cookie-session');

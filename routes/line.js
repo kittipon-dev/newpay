@@ -39,10 +39,14 @@ function handleEvent(event) {
     const echo = { type: 'text', text: event.source.userId };
     return client.replyMessage(event.replyToken, echo)
   }
-  
+
   if (event.message.text == 'รายได้' || event.message.text == 'Uid') {
-    // console.log(event);
-    const echo = { type: 'text', text: event.source.userId };
+    const today = 10
+    const thismonth = 100
+    const echo = {
+      type: 'text',
+      text: `วันนี้: ${today}\nเดือนนี้: ${thismonth}`
+    };
     return client.replyMessage(event.replyToken, echo)
   }
 
@@ -65,7 +69,7 @@ function handleEvent(event) {
   // use reply API
   //return client.replyMessage(event.replyToken, echo);
   //return client.replyMessage(event.replyToken, echo);
-  console.log("send ok");
+  console.log("send ok2");
 
 }
 
