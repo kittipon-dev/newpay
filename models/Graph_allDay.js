@@ -8,5 +8,5 @@ const allSchema = new Schema({
     y: Number,
     time: String,
 })
-const Graph_all = mongoose.model('Graph_all', allSchema)
+const Graph_all = mongoose.model('Graph_allDay', allSchema)
 module.exports = Graph_all

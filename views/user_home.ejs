@@ -224,12 +224,12 @@
 
         function getBalance() {
             axios
-                .get("/get_balance")
+                .get("/ksher/AmountAll")
                 .then(response => {
                     const data = response.data
                     document.getElementById('txtTD').innerText = data.d
                     document.getElementById('txtTM').innerText = data.m
-                    document.getElementById('txtTA').innerText = data.a
+                    document.getElementById('txtTA').innerText = data.total
                 })
                 .catch(err => {
 
@@ -293,16 +293,13 @@
             cfg.type = t
             chart.update()
         }
-
-
         function getGday() {
             axios
-                .get("/ksher/getGraph")
+                .get("/ksher/GraphAllDay")
                 .then(response => {
                     const data = response.data
-                    console.log(data);
-                    //dataG = []
-                    //txtG = []
+                    dataG = []
+                    txtG = []
                     for (let index = 0; index < data.length; index++) {
                         dataG[index] = data[index].amount
                         txtG[index] = data[index].d + "/" + data[index].m + "/" + data[index].y
@@ -318,10 +315,9 @@
         }
         function getGmonth() {
             axios
-                .get("/g_month")
+                .get("/ksher/GraphAllMonth")
                 .then(response => {
                     const data = response.data
-                    console.log(data);
                     dataG = []
                     txtG = []
                     for (let index = 0; index < data.length; index++) {
@@ -339,15 +335,14 @@
         }
         function getGyear() {
             axios
-                .get("/g_year")
+                .get("/ksher/GraphAllYear")
                 .then(response => {
                     const data = response.data
-                    console.log(data);
                     dataG = []
                     txtG = []
                     for (let index = 0; index < data.length; index++) {
                         dataG[index] = data[index].amount
-                        txtG[index] =  data[index].y
+                        txtG[index] = data[index].y
                     }
                     updataG(dataG, txtG)
                     document.getElementById('y').classList.add('btn-primary')
@@ -358,7 +353,6 @@
 
                 })
         }
-
         function updataG(d, t) {
             cfg.data.datasets[0].data = dataG
             cfg.data.labels = txtG

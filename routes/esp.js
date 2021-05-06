@@ -34,7 +34,6 @@ const path = require('path')
 const Run = require('../models/RUN')
 router.get('/getbin', async (req, res) => {
     const dbCodedeviceUse = await Code_device.findOne({ status: "use" })
-    console.log(dbCodedeviceUse);
     await res.sendFile(path.join(__dirname, '../public/code_bin', `${dbCodedeviceUse.ver}.bin`));
 })
 
@@ -144,7 +143,6 @@ client.on('message', async function (topic, message) {
 
 
 async function returnOK(d) {
-    console.log("ok");
     await Device.findOneAndUpdate({ dname: d }, {
         $set: { status: "online" }
     })

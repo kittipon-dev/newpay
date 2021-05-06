@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const branchSchema = new Schema({
+const branchMonthSchema = new Schema({
     user_id: Number,
     branch: Number,
     amount: Schema.Types.Double,
@@ -8,5 +8,5 @@ const branchSchema = new Schema({
     m: Number,
     y: Number,
 })
-const Graph_branch = mongoose.model('Graph_branch', branchSchema)
-module.exports = Graph_branch
+const Graph_branchMonth = mongoose.model('Graph_branchMonth', branchMonthSchema)
+module.exports = Graph_branchMonth

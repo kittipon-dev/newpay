@@ -21,7 +21,7 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'),{etag: false}));
 
 // APPLY COOKIE SESSION MIDDLEWARE
 app.use(cookieSession({

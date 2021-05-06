@@ -2,15 +2,10 @@ const User = require('../models/User')
 const Config = require('../models/Config')
 const Customer = require('../models/Customer');
 const Device = require('../models/Device');
-const Balance = require('../models/Balance')
-const Graph_day = require('../models/Graph_day')
-const Graph_month = require('../models/Graph_month')
-const Graph_year = require('../models/Graph_year')
-const Graph_all = require('../models/Graph_all')
 const RUN = require('../models/RUN')
-const TM = require('../models/TM')
+const TransactionKsher = require('../models/TransactionKsher')
 const Code_device = require('../models/Code_device')
-
+const UidLine = require('../models/UidLine')
 
 const mongoose = require('mongoose');
 mongoose.set('useCreateIndex', true)
@@ -42,9 +37,7 @@ const ifNotLoggedinAdmin = (req, res, next) => {
 }
 
 const ifLoggedinAdmin = (req, res, next) => {
-  console.log("aasd");
   if (req.session.isLoggedInAdmin) {
-    console.log("aaaaaaa");
     return res.redirect('/admin');
   }
   next();
@@ -116,9 +109,11 @@ router.post('/newcustomer', ifNotLoggedinAdmin, async function (req, res, next) 
         myobj.time = new Date()
         myobj.branch = parseInt(req.body.branch)
         const customer = new Customer(myobj)
+        const uidline = new UidLine({ user_id: newuser_id })
 
         await user.save();
         await customer.save();
+        await uidline.save();
         await Config.updateOne({}, { user_id: newuser_id })
         res.redirect('/admin/customer');
       })
@@ -135,14 +130,26 @@ router.post('/newcustomer', ifNotLoggedinAdmin, async function (req, res, next) 
 
 /* GET customer page. */
 router.get('/line', ifNotLoggedinAdmin, async function (req, res, next) {
-  const dbUser = await User.find({})
+  const dbUser = await User.find()
   res.render('admin_line', { data: dbUser });
 });
-router.post('/update_uid', ifNotLoggedinAdmin, async function (req, res, next) {
-  const dbUser = await User.findOneAndUpdate({ user_id: req.body.user_id },
-    { $set: { uid_line: req.body.uid } })
-  res.redirect('/admin/line')
+router.get('/line_manager', ifNotLoggedinAdmin, async function (req, res, next) {
+  const dbUidLine = await UidLine.find({ user_id: req.query.user_id })
+  res.render('admin_lineM', { data: dbUidLine, user_id: req.query.user_id });
 });
+router.post('/add_uidline', ifNotLoggedinAdmin, async function (req, res, next) {
+  const dbUidLine = new UidLine({
+    user_id: req.body.user_id,
+    uid: req.body.uid
+  })
+  await dbUidLine.save()
+  res.redirect('/admin/line_manager?user_id=' + req.body.user_id)
+});
+router.get('/del_uidline', ifNotLoggedinAdmin, async function (req, res, next) {
+  const dbUser = await UidLine.findByIdAndDelete(req.query._id)
+  res.redirect('/admin/line_manager?user_id=' + req.query.user_id)
+});
+
 
 /* GET customer page. */
 router.get('/device', ifNotLoggedinAdmin, async function (req, res, next) {
@@ -259,100 +266,6 @@ router.get('/logrun', ifNotLoggedinAdmin, async function (req, res, next) {
 router.get('/logt', ifNotLoggedinAdmin, async function (req, res, next) {
   res.render('admin_logt');
 });
-
-
-
-
-
-
-router.get('/get_balance', async function (req, res, next) {
-  const now = dayjs()
-
-  let d = 0
-  let m = 0
-  let y = 0
-
-  const gd = await Graph_day.findOne({
-    d: now.date(),
-    m: now.month() + 1,
-    y: now.year()
-  })
-  const gm = await Graph_month.findOne({
-    m: now.month() + 1,
-    y: now.year()
-  })
-  const gy = await Graph_year.find({
-
-  })
-
-  if (gd != null) {
-    d = gd.amount
-  }
-  if (gm != null) {
-    m = gm.amount
-  }
-  if (gy != null) {
-    gy.forEach(e => {
-      y += e.amount
-    });
-  }
-  res.send({
-    d: d,
-    m: m,
-    a: y
-  })
-
-});
-
-router.get('/g_day', async function (req, res, next) {
-  const now = dayjs()
-
-  const gd = await Graph_day.find({
-    user_id: req.session.user_id,
-    shop: 0
-  })
-  res.send(gd)
-
-});
-
-router.get('/g_month', async function (req, res, next) {
-  const now = dayjs()
-  if (req.query.shop > 0) {
-    const gm = await Graph_month.find({ user_id: req.session.user_id, shop: req.query.shop })
-    res.send(gm)
-  } else {
-    const gm = await Graph_month.find({
-      user_id: req.session.user_id,
-      shop: 0,
-      m: now.month() + 1,
-      y: now.year()
-    })
-    res.send(gm)
-  }
-});
-
-router.get('/g_year', async function (req, res, next) {
-  const now = dayjs()
-  if (req.query.shop > 0) {
-    const gy = await Graph_year.find({ user_id: req.session.user_id, shop: req.query.shop })
-    res.send(gy)
-  } else {
-    const gy = await Graph_year.find({
-      user_id: req.session.user_id,
-      shop: 0,
-      y: now.year()
-    })
-    res.send(gy)
-  }
-});
-
-
-/* GET home page. */
-router.get('/get_transaction', ifNotLoggedinAdmin, async function (req, res, next) {
-  const dbBalance = await Balance.find({ user_id: req.session.user_id })
-  res.send(dbBalance)
-});
-
 
 
 module.exports = router;

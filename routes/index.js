@@ -6,7 +6,8 @@ const Graph_year = require('../models/Graph_year')
 const Graph_all = require('../models/Graph_all')
 const Customer = require('../models/Customer')
 const RUN = require('../models/RUN')
-const TM = require('../models/TM')
+const TransactionKsher = require('../models/TransactionKsher')
+const Transactions = require('../models/Transaction')
 const Device = require('../models/Device');
 const QRcode = require('../models/QRcode');
 
@@ -29,7 +30,6 @@ const bcrypt = require('bcrypt');
 
 const { body, validationResult } = require('express-validator');
 const { fstat } = require('fs')
-
 
 
 
@@ -76,7 +76,6 @@ router.post('/newpassword', async (req, res) => {
       bcrypt.compare(dbUser.email + req.body.oldpass, dbUser.password).then(compare_result => {
         if (compare_result === true) {
           bcrypt.hash(dbUser.email + req.body.newpass, 12).then(async (hash_pass) => {
-            console.log(hash_pass);
             const dbUserNew = await User.findOneAndUpdate({ user_id: req.session.user_id },
               {
                 $set: {
@@ -172,135 +171,9 @@ router.get('/notrun', ifNotLoggedin, async function (req, res, next) {
 
 /* GET home page. */
 router.get('/info_transaction', ifNotLoggedin, async function (req, res, next) {
-  const dbBalance = await Balance.find({ user_id: req.session.user_id })
-  res.render('user_infotransaction', { data: dbBalance })
+  const dbTransactions = await Transactions.find({ user_id: req.session.user_id })
+  res.render('user_infotransaction', { data: dbTransactions })
 });
 
-
-router.get('/g_day', async function (req, res, next) {
-  const now = dayjs()
-  if (req.query.shop > 0) {
-    const gd = await Graph_day.find({ user_id: req.session.user_id, shop: req.query.shop })
-    res.send(gd)
-  } else {
-    const gd = await Graph_day.find({
-      user_id: req.session.user_id,
-      shop: 0
-    })
-    res.send(gd)
-  }
-});
-
-router.get('/g_month', async function (req, res, next) {
-  const now = dayjs()
-  if (req.query.shop > 0) {
-    const gm = await Graph_month.find({ user_id: req.session.user_id, shop: req.query.shop })
-    res.send(gm)
-  } else {
-    const gm = await Graph_month.find({
-      user_id: req.session.user_id,
-      shop: 0,
-      m: now.month() + 1,
-      y: now.year()
-    })
-    res.send(gm)
-  }
-});
-
-router.get('/g_year', async function (req, res, next) {
-  const now = dayjs()
-  if (req.query.shop > 0) {
-    const gy = await Graph_year.find({ user_id: req.session.user_id, shop: req.query.shop })
-    res.send(gy)
-  } else {
-    const gy = await Graph_year.find({
-      user_id: req.session.user_id,
-      shop: 0,
-      y: now.year()
-    })
-    res.send(gy)
-  }
-});
-
-
-router.get('/get_balance', async function (req, res, next) {
-  const now = dayjs()
-
-  let d = 0
-  let m = 0
-  let y = 0
-
-  if (req.query.shop > 0) {
-    const gd = await Graph_day.findOne({
-      user_id: req.session.user_id,
-      shop: req.query.shop,
-      d: now.date(),
-      m: now.month() + 1,
-      y: now.year()
-    })
-    const gm = await Graph_month.findOne({
-      user_id: req.session.user_id,
-      shop: req.query.shop,
-      m: now.month() + 1,
-      y: now.year()
-    })
-    const gy = await Graph_year.find({
-      user_id: req.session.user_id,
-      shop: req.query.shop,
-    })
-
-    if (gd != null) {
-      d = gd.amount
-    }
-    if (gm != null) {
-      m = gm.amount
-    }
-    if (gy != null) {
-      gy.forEach(e => {
-        y += e.amount
-      });
-    }
-    res.send({
-      d: d,
-      m: m,
-      a: y
-    })
-  } else {
-    const gd = await Graph_day.findOne({
-      user_id: req.session.user_id,
-      shop: 0,
-      d: now.date(),
-      m: now.month() + 1,
-      y: now.year()
-    })
-    const gm = await Graph_month.findOne({
-      user_id: req.session.user_id,
-      shop: 0,
-      m: now.month() + 1,
-      y: now.year()
-    })
-    const gy = await Graph_year.find({
-      user_id: req.session.user_id,
-      shop: 0,
-    })
-
-    if (gd != null) {
-      d = gd.amount
-    }
-    if (gm != null) {
-      m = gm.amount
-    }
-    if (gy != null) {
-      gy.forEach(e => {
-        y += e.amount
-      });
-    }
-    res.send({
-      d: d,
-      m: m,
-      a: y
-    })
-  }
-});
 
 module.exports = router;

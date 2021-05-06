@@ -3,18 +3,22 @@ const Config = require('../models/Config')
 const Customer = require('../models/Customer');
 const Device = require('../models/Device');
 const Balance = require('../models/Balance')
-const Graph_day = require('../models/Graph_day')
-const Graph_month = require('../models/Graph_month')
-const Graph_year = require('../models/Graph_year')
-const Graph_all = require('../models/Graph_all')
-const Graph_branch = require('../models/Graph_branch')
-const RUN = require('../models/RUN')
-const TM = require('../models/TM')
+
+const Graph_allDay = require('../models/Graph_allDay')
+const Graph_branchDay = require('../models/Graph_branchDay')
+const Graph_allMonth = require('../models/Graph_allMonth')
+const Graph_branchMonth = require('../models/Graph_branchMonth')
+const Graph_allYear = require('../models/Graph_allYear')
+const Graph_branchYear = require('../models/Graph_branchYear')
+
+const Run = require('../models/RUN')
+const TransactionKsher = require('../models/TransactionKsher')
+const Transaction = require('../models/Transaction')
 const Code_device = require('../models/Code_device')
 
 
 
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 mongoose.set('useCreateIndex', true)
 mongoose.connect('mongodb://localhost:27017/newpay', {
   useFindAndModify: false,
@@ -34,52 +38,95 @@ const portmqtt = "1883"
 const client = mqtt.connect(`mqtt://${ipmqtt}:${portmqtt}`)
 
 
-// LOGIN PAGE
+
 router.post('/', async (req, res) => {
-  const tm = new TM(req.body)
-  await tm.save()
-  if (req.body.data.result == "SUCCESS") {
-    const dbDevice = await Device.findOne({ dname: req.body.data.device_id })
-    const p = parseFloat(req.body.data.total_fee) / 100
-    const now = dayjs()
-    const myobj = {
-      user_id: dbDevice.user_id,
-      dname: dbDevice.dname,
-      d: now.date(),
-      m: now.month() + 1,
-      y: now.year(),
-      t: dayjs().format(),
-      branch: dbDevice.group,
-      amount: p,
-      nonce_str: req.body.data.nonce_str,
-      run: false
+  try {
+    const tm = new TransactionKsher(req.body)
+    await tm.save()
+    if (req.body.data.result == "SUCCESS") {
+      const dbDevice = await Device.findOne({ dname: req.body.data.device_id })
+      const p = parseFloat(req.body.data.total_fee) / 100
+      const now = dayjs()
+      const myobj = {
+        user_id: dbDevice.user_id,
+        dname: dbDevice.dname,
+        d: now.date(),
+        m: now.month() + 1,
+        y: now.year(),
+        t: dayjs().format(),
+        branch: dbDevice.group,
+        amount: p,
+        nonce_str: req.body.data.nonce_str,
+        run: false
+      }
+      sendESP(dbDevice, myobj)
+      Processing(dbDevice, myobj, req.body)
     }
-    sendESP(dbDevice, myobj)
-    Processing(dbDevice, myobj, req.body)
+  } catch (error) {
+
   }
-  res.end()
 });
 
+
+/*
+    "code": 0,
+    "version": "3.0.0",
+    "status_code": "",
+    "msg": "ok",
+    "time_stamp": "2021-01-22T05: 19: 36.633951+08: 00",
+    "status_msg": "",
+    "data": {
+        "openid": "",
+        "channel_order_no": "",
+        "operator_id": "33531",
+        "cash_fee_type": "THB",
+        "ksher_order_no": 90020210122051821465169,
+        "nonce_str": "DHqgKHaPbipEbbJ15Y64ZETFJOyefqSL",
+        "time_end": "2021-01-22 04: 19: 35",
+        "fee_type": "THB",
+        "attach": "",
+        "rate": "0.000000",
+        "result": "SUCCESS",
+        "total_fee": 100,
+        "appid": "mch35306",
+        "order_no": 1611263900970,
+        "operation": "NATIVE-PAY",
+        "device_id": "10010101",
+        "cash_fee": 100,
+        "channel": "bbl_promptpay",
+        "mch_order_no": 1611263900970
+    },
+    "sign": "41a7dd3e926d3a0a4b8af75a1ae304fed97c5722fb747c15e58914c9ce2bc111207debd7622c20bfd83ddcaf57b67f98e335a6bb3fc7a7caa22b76243ec4ed44"
+    */
 
 
 async function sendESP(device, myobj) {
   if (myobj.amount == device.price1) {
     client.publish(myobj.dname.toString(), `1&&${myobj.nonce_str}`)
-    const run = new RUN(myobj)
+    const run = new Run(myobj)
     await run.save()
   } else if (myobj.amount == device.price2) {
     client.publish(myobj.dname.toString(), `2&&${myobj.nonce_str}`)
-    const run = new RUN(myobj)
+    const run = new Run(myobj)
     await run.save()
   } else if (myobj.amount == device.price3) {
     client.publish(myobj.dname.toString(), `3&&${myobj.nonce_str}`)
-    const run = new RUN(myobj)
+    const run = new Run(myobj)
     await run.save()
   }
 }
 
 async function Processing(device, myobj, result) {
-  const g = await Graph_all.findOneAndUpdate({
+  const dbTransaction = new Transaction({
+    user_id: myobj.user_id,
+    dname: myobj.dname,
+    branch: myobj.branch,
+    amount: myobj.amount,
+    nonce_str: myobj.nonce_str,
+    time: myobj.t
+  })
+  await dbTransaction.save()
+  const ad = await Graph_allDay.findOneAndUpdate({
     user_id: myobj.user_id,
     d: myobj.d,
     m: myobj.m,
@@ -90,7 +137,7 @@ async function Processing(device, myobj, result) {
     new: true,
     upsert: true
   })
-  const branch = await Graph_branch.findOneAndUpdate({
+  const bd = await Graph_branchDay.findOneAndUpdate({
     user_id: myobj.user_id,
     branch: myobj.branch,
     d: myobj.d,
@@ -102,274 +149,180 @@ async function Processing(device, myobj, result) {
     new: true,
     upsert: true
   })
+  const am = await Graph_allMonth.findOneAndUpdate({
+    user_id: myobj.user_id,
+    m: myobj.m,
+    y: myobj.y
+  }, {
+    $inc: { amount: myobj.amount }
+  }, {
+    new: true,
+    upsert: true
+  })
+  const bm = await Graph_branchMonth.findOneAndUpdate({
+    user_id: myobj.user_id,
+    branch: myobj.branch,
+    m: myobj.m,
+    y: myobj.y
+  }, {
+    $inc: { amount: myobj.amount }
+  }, {
+    new: true,
+    upsert: true
+  })
+  const ay = await Graph_allYear.findOneAndUpdate({
+    user_id: myobj.user_id,
+    y: myobj.y
+  }, {
+    $inc: { amount: myobj.amount }
+  }, {
+    new: true,
+    upsert: true
+  })
+  const by = await Graph_branchYear.findOneAndUpdate({
+    user_id: myobj.user_id,
+    branch: myobj.branch,
+    y: myobj.y
+  }, {
+    $inc: { amount: myobj.amount }
+  }, {
+    new: true,
+    upsert: true
+  })
 }
 
 
-router.get('/getGraph', async function (req, res, next) {
+router.get('/GraphAllDay', async function (req, res, next) {
   const now = dayjs()
-
-  const dg = await Graph_all.find({
+  const dg = await Graph_allDay.find({
     user_id: req.session.user_id,
   })
-
-  console.log(dg);
   res.send(dg)
-
+});
+router.get('/GraphBranchDay', async function (req, res, next) {
+  const now = dayjs()
+  const dg = await Graph_branchDay.find({
+    user_id: req.session.user_id,
+    branch: req.query.branch
+  })
+  res.send(dg)
+});
+router.get('/GraphAllMonth', async function (req, res, next) {
+  const now = dayjs()
+  const dg = await Graph_allMonth.find({
+    user_id: req.session.user_id,
+  })
+  res.send(dg)
+});
+router.get('/GraphBranchMonth', async function (req, res, next) {
+  const now = dayjs()
+  const dg = await Graph_branchMonth.find({
+    user_id: req.session.user_id,
+    branch: req.query.branch,
+  })
+  res.send(dg)
+});
+router.get('/GraphAllYear', async function (req, res, next) {
+  const now = dayjs()
+  const dg = await Graph_allYear.find({
+    user_id: req.session.user_id,
+  })
+  res.send(dg)
+});
+router.get('/GraphBranchYear', async function (req, res, next) {
+  const now = dayjs()
+  const dg = await Graph_branchYear.find({
+    user_id: req.session.user_id,
+    branch: req.query.branch,
+  })
+  res.send(dg)
 });
 
 
-async function addG(myobj) {
-
-  const dG = await Graph_day.findOne({
-    user_id: myobj.user_id,
-    branch: myobj.branch,
-    d: myobj.d,
-    m: myobj.m,
-    y: myobj.y
-  })
-
-  const amountD = await Graph_day.findOne({
-    user_id: myobj.user_id,
-    branch: 0,
-    d: myobj.d,
-    m: myobj.m,
-    y: myobj.y
-  })
-
-  if (dG) {
-    const a = await Graph_day.findOneAndUpdate({
-      user_id: myobj.user_id,
-      branch: myobj.branch,
-      d: myobj.d,
-      m: myobj.m,
-      y: myobj.y
-    }, { $set: { amount: dG.amount + myobj.amount } })
-  } else {
-    const a = await Graph_day.findOneAndUpdate({
-      user_id: myobj.user_id,
-      branch: myobj.branch,
-      d: myobj.d,
-      m: myobj.m,
-      y: myobj.y
-    }, { $set: { amount: myobj.amount } }, {
-      new: true,
-      upsert: true
-    })
-  }
-  if (!amountD) {
-    const aa = await Graph_day.findOneAndUpdate({
-      user_id: myobj.user_id,
-      branch: 0,
-      d: myobj.d,
-      m: myobj.m,
-      y: myobj.y
-    }, { $set: { amount: myobj.amount } }, {
-      new: true,
-      upsert: true
-    })
-  } else {
-    const aa = await Graph_day.findOneAndUpdate({
-      user_id: myobj.user_id,
-      branch: 0,
-      d: myobjd.d,
-      m: myobj.m,
-      y: myobj.y
-    }, { $set: { amount: amountD.amount + myobj.amount } })
-  }
-
-  const mG = await Graph_month.findOne({
-    user_id: myobj.user_id,
-    branch: myobj.branch,
-    m: myobj.m,
-    y: myobj.y
-  })
-
-  const amountM = await Graph_month.findOne({
-    user_id: myobj.user_id,
-    branch: 0,
-    m: myobj.m,
-    y: myobj.y
-  })
-
-  if (mG) {
-    const a = await Graph_month.findOneAndUpdate({
-      user_id: myobj.user_id,
-      branch: myobj.branch,
-      m: myobj.m,
-      y: myobj.y
-    }, { $set: { amount: mG.amount + myobj.amount } })
-  } else {
-    const a = await Graph_month.findOneAndUpdate({
-      user_id: myobj.user_id,
-      branch: myobj.branch,
-      m: myobj.m,
-      y: myobj.y
-    }, { $set: { amount: myobj.amount } }, {
-      new: true,
-      upsert: true
-    })
-  }
-  if (!amountM) {
-    const aa = await Graph_month.findOneAndUpdate({
-      user_id: myobj.user_id,
-      branch: 0,
-      m: myobj.m,
-      y: myobj.y
-    }, { $set: { amount: myobj.amount } }, {
-      new: true,
-      upsert: true
-    })
-  } else {
-    const aa = await Graph_month.findOneAndUpdate({
-      user_id: myobj.user_id,
-      branch: 0,
-      m: myobj.m,
-      y: myobj.y
-    }, { $set: { amount: amountM.amount + myobj.amount } })
-  }
-
-  const yG = await Graph_year.findOne({
-    user_id: myobj.user_id,
-    branch: myobj.branch,
-    y: myobj.y
-  })
-
-  const amountY = await Graph_year.findOne({
-    user_id: myobj.user_id,
-    branch: 0,
-    y: myobj.y
-  })
-
-  if (yG) {
-    const a = await Graph_year.findOneAndUpdate({
-      user_id: myobj.user_id,
-      branch: myobj.branch,
-      y: myobj.y
-    }, { $set: { amount: yG.amount + myobj.amount } })
-  } else {
-    const a = await Graph_year.findOneAndUpdate({
-      user_id: myobj.user_id,
-      branch: myobj.branch,
-      y: myobj.y
-    }, { $set: { amount: myobj.amount } }, {
-      new: true,
-      upsert: true
-    })
-  }
-  if (!amountY) {
-    const aa = await Graph_year.findOneAndUpdate({
-      user_id: myobj.user_id,
-      branch: 0,
-      y: myobj.y
-    }, { $set: { amount: myobj.amount } }, {
-      new: true,
-      upsert: true
-    })
-  } else {
-    const aa = await Graph_year.findOneAndUpdate({
-      user_id: myobj.user_id,
-      branch: 0,
-      y: myobj.y
-    }, { $set: { amount: amountY.amount + myobj.amount } })
-  }
-
-}
-
-
-
-
-
-
-
-
-router.get('/get_balance', async function (req, res, next) {
+router.get('/AmountAll', async function (req, res, next) {
   const now = dayjs()
-
   let d = 0
   let m = 0
-  let y = 0
-
-  const gd = await Graph_day.findOne({
+  let total = 0
+  const day = await Graph_allDay.findOne({
+    user_id: req.session.user_id,
     d: now.date(),
     m: now.month() + 1,
     y: now.year()
   })
-  const gm = await Graph_month.findOne({
+  const month = await Graph_allMonth.findOne({
+    user_id: req.session.user_id,
     m: now.month() + 1,
     y: now.year()
   })
-  const gy = await Graph_year.find({
-
+  const year = await Graph_allYear.find({
+    user_id: req.session.user_id,
   })
-
-  if (gd != null) {
-    d = gd.amount
+  if (day != null) {
+    d = day.amount
   }
-  if (gm != null) {
-    m = gm.amount
+  if (month != null) {
+    m = month.amount
   }
-  if (gy != null) {
-    gy.forEach(e => {
-      y += e.amount
+  if (year != null) {
+    year.forEach(e => {
+      total += e.amount
     });
   }
+
   res.send({
     d: d,
     m: m,
-    a: y
+    total: total
   })
-
 });
-
-router.get('/g_day', async function (req, res, next) {
+router.get('/AmountBranch', async function (req, res, next) {
   const now = dayjs()
-
-  const gd = await Graph_day.find({
+  let d = 0
+  let m = 0
+  let total = 0
+  const day = await Graph_branchDay.findOne({
     user_id: req.session.user_id,
-    branch: 0
+    branch: req.query.branch,
+    d: now.date(),
+    m: now.month() + 1,
+    y: now.year()
   })
-  res.send(gd)
-
-});
-
-router.get('/g_month', async function (req, res, next) {
-  const now = dayjs()
-  if (req.query.branch > 0) {
-    const gm = await Graph_month.find({ user_id: req.session.user_id, branch: req.query.branch })
-    res.send(gm)
-  } else {
-    const gm = await Graph_month.find({
-      user_id: req.session.user_id,
-      branch: 0,
-      m: now.month() + 1,
-      y: now.year()
-    })
-    res.send(gm)
+  const month = await Graph_branchMonth.findOne({
+    user_id: req.session.user_id,
+    branch: req.query.branch,
+    m: now.month() + 1,
+    y: now.year()
+  })
+  const year = await Graph_branchYear.find({
+    user_id: req.session.user_id,
+    branch: req.query.branch,
+  })
+  if (day != null) {
+    d = day.amount
   }
-});
-
-router.get('/g_year', async function (req, res, next) {
-  const now = dayjs()
-  if (req.query.branch > 0) {
-    const gy = await Graph_year.find({ user_id: req.session.user_id, branch: req.query.branch })
-    res.send(gy)
-  } else {
-    const gy = await Graph_year.find({
-      user_id: req.session.user_id,
-      branch: 0,
-      y: now.year()
-    })
-    res.send(gy)
+  if (month != null) {
+    m = month.amount
   }
-});
+  if (year != null) {
+    year.forEach(e => {
+      total += e.amount
+    });
+  }
 
+  res.send({
+    d: d,
+    m: m,
+    total: total
+  })
+});
 
 /* GET home page. */
 router.get('/get_transaction', async function (req, res, next) {
-  const dbBalance = await Balance.find({ user_id: req.session.user_id })
-  res.send(dbBalance)
+  const dbRun = await Run.find({ user_id: req.session.user_id })
+  //console.log(dbRun);
+  res.send(dbRun)
 });
-
 
 
 module.exports = router;

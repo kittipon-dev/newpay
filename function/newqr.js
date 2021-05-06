@@ -14,7 +14,7 @@ const appid = "mch35306";
 const channel = "bbl_promptpay";
 const feeType = "THB";
 const notify_url = "https://ksher.newpay.dev/";
-
+//const notify_url = "https://newpay.dev/ksher/";
 
 const privateKey = `-----BEGIN RSA PRIVATE KEY-----
 MIICYQIBAAKBgQDDvri3e3vw3/dBE8SQxyynfPCbytO0JC83oQt8UtVZsTacslTs

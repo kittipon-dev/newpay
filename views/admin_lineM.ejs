@@ -12,11 +12,10 @@
 
     <link rel="stylesheet" href="/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="/assets/css/app.css">
-    <link rel="shortcut icon" href="/assets/images/favicon.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="images/neware.png" type="image/x-icon">
 
     <script>
-        let dc = JSON.parse('<%-JSON.stringify(dataC)%>')
-        let dd = JSON.parse('<%-JSON.stringify(dataD)%>')
+        let dc = JSON.parse('<%-JSON.stringify(data)%>')
     </script>
 
 </head>
@@ -26,7 +25,7 @@
         <div id="sidebar" class='active'>
             <div class="sidebar-wrapper active">
                 <div class="sidebar-header">
-                    
+
                 </div>
                 <div class="sidebar-menu">
                     <ul class="menu">
@@ -38,20 +37,20 @@
                             </a>
                         </li>
                         <li class="sidebar-item ">
-                            <a href="/admin/customer" class='sidebar-link'>
+                            <a href="/admin/customer " class='sidebar-link'>
                                 <i data-feather="user" width="20"></i>
                                 <span>Customer Manager</span>
                             </a>
                         </li>
 
-                        <li class="sidebar-item ">
+                        <li class="sidebar-item active">
                             <a href="/admin/line" class='sidebar-link'>
                                 <i data-feather="at-sign" width="20"></i>
                                 <span>Line Manager</span>
                             </a>
                         </li>
 
-                        <li class="sidebar-item active">
+                        <li class="sidebar-item ">
                             <a href="/admin/device" class='sidebar-link'>
                                 <i data-feather="hard-drive" width="20"></i>
                                 <span>Device Manager</span>
@@ -111,59 +110,54 @@
 
             <div class="main-content container-fluid">
 
-                <!-- Table head options start -->
-                <div class="row" id="table-head">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-content">
-                                <!-- table head dark -->
-                                <div class="table-responsive">
-                                    <table class="table mb-0">
-                                        <thead class="thead-dark">
-                                            <tr>
-                                                <th>USER_ID</th>
-                                                <th>MAIL</th>
-                                                <th>NAME</th>
-                                                <th>STATUS DEVICE</th>
-                                                <th>ACTION</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tb">
-                                            <script>
-                                                console.log(dc);
-                                                for (let index = 0; index < dc.length; index++) {
-                                                    document.write(`
-                                                    <tr class="unread">
-                                                <td>
-                                                    <h6 class="mb-1">${dc[index].user_id}</h6>
-                                                </td>
-                                                <td>
-                                                    <h6 class="mb-1">${dc[index].email}</h6>
-                                                </td>
-                                                <td>
-                                                    <h6 class="mb-1">${dc[index].fname}</h6>
-                                                </td>
-                                                <td>
-                                                    <h6 class="mb-1">${dc[index].name}</h6>
-                                                </td>
-                                                <td >
-                                                    <a href="/admin/device_manager?user_id=${dc[index].user_id}" class="btn btn-outline-info")"><i data-feather="corner-down-right"></i></a>
-                                                </td>
-                                            </tr>`)
-
-                                                }
-
-                                            </script>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                <a href="/admin/line" class="btn btn-outline-info">กลับ</a>
+                <br>
+                <br>
+                <div class="col-6">
+                    <form action="/admin/add_uidline" method="post">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">UID </span>
+                            <input type="text" class="form-control" name="uid">
+                            <input type="text" class="form-control" id="user_id" name="user_id" value="<%= user_id %>" hidden>
+                            <button type="submit" class="btn btn-primary ml-1">
+                                <i class="bx bx-check d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">เพิ่ม</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <br>
+                <div class="col-lg-6">
+                    <div class="card widget-todo">
+                        <div class="card-body px-0 py-1">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <script>
+                                        dc.forEach(e => {
+                                            console.log(e);
+                                            document.write(`
+                                                <tr>
+                                                    <td class="col-3">(state)</td>
+                                                    <td class="col-6 text-center">${e.uid}</td>
+                                                    <td class="col-3 text-center">
+                                                        <a href="/admin/del_uidline?user_id=${e.user_id}&_id=${e._id}"
+                                                            class="text-danger"><i data-feather="trash-2" width="20"></i></a>
+                                                    </td>
+                                                </tr>`)
+                                        });
+                                    </script>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-                <!-- Table head options end -->
 
-                
+                <script>
+                    function info(p) {
+                        document.getElementById("user_id").value = dc[p].user_id
+                    }
+                </script>
+
             </div>
 
         </div>

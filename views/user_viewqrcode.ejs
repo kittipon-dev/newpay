@@ -122,7 +122,7 @@
                 <div class="row">
                     <script>
                         console.log(dd);
-                        if (dd.imgP1) {
+                        if (dd.imgP1 && dd.price1 > 0) {
                             document.write(`
                             <div class="col-md-4">
                             <div class="card ">
@@ -141,7 +141,7 @@
                             </div>
                             `)
                         }
-                        if (dd.imgP2) {
+                        if (dd.imgP2 && dd.price2 > 0) {
                             document.write(`
                             <div class="col-md-4">
                             <div class="card ">
@@ -160,7 +160,7 @@
                             </div>
                             `)
                         }
-                        if (dd.imgP3) {
+                        if (dd.imgP3 && dd.price3 > 0) {
                             document.write(`
                             <div class="col-md-4">
                             <div class="card ">

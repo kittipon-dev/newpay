@@ -130,7 +130,6 @@
                                         </thead>
                                         <tbody id="tb">
                                             <script>
-                                                console.log(dc);
                                                 for (let index = 0; index < dc.length; index++) {
                                                     document.write(`
                                                     <tr class="unread">
@@ -141,12 +140,10 @@
                                                     <h6 class="mb-1">${dc[index].email}</h6>
                                                 </td>
                                                 <td>
-                                                    <h6 class="mb-1">${dc[index].uid_line}</h6>
+                                                    <h6 class="mb-1">${dc[index].uid}</h6>
                                                 </td>
                                                 <td >
-                                                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal"
-                                                        data-bs-target="#exampleModalScrollable" onclick="info('${index}')">แก้ไข
-                                                    </button>
+                                                    <a href="/admin/line_manager?user_id=${dc[index].user_id}" class="btn btn-outline-info")"><i data-feather="corner-down-right"></i></a>
                                                 </td>
                                             </tr>`)
 

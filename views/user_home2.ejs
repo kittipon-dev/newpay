@@ -228,12 +228,12 @@
 
         function getBalance() {
             axios
-                .get("/get_balance?shop=" + dd.branch)
+                .get("/ksher/AmountBranch?branch=" + dd.branch)
                 .then(response => {
                     const data = response.data
                     document.getElementById('txtTD').innerText = data.d
                     document.getElementById('txtTM').innerText = data.m
-                    document.getElementById('txtTA').innerText = data.a
+                    document.getElementById('txtTA').innerText = data.total
                 })
                 .catch(err => {
 
@@ -275,9 +275,7 @@
                             display: false
                         }
                     }]
-
                 },
-
             }
         };
 
@@ -300,11 +298,11 @@
 
         function getGday() {
             axios
-                .get("/g_day?shop=" + dd.branch)
+                .get("/ksher/GraphBranchDay?branch=" + dd.branch)
                 .then(response => {
                     const data = response.data
-                    //dataG = []
-                    //txtG = []
+                    dataG = []
+                    txtG = []
                     for (let index = 0; index < data.length; index++) {
                         dataG[index] = data[index].amount
                         txtG[index] = data[index].d + "/" + data[index].m + "/" + data[index].y
@@ -320,7 +318,7 @@
         }
         function getGmonth() {
             axios
-                .get("/g_month?shop=" + dd.branch)
+                .get("/ksher/GraphBranchMonth?branch=" + dd.branch)
                 .then(response => {
                     const data = response.data
                     dataG = []
@@ -340,7 +338,7 @@
         }
         function getGyear() {
             axios
-                .get("/g_year?shop=" + dd.branch)
+                .get("/ksher/GraphBranchYear?branch=" + dd.branch)
                 .then(response => {
                     const data = response.data
                     dataG = []
