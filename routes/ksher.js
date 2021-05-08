@@ -40,65 +40,23 @@ const client = mqtt.connect(`mqtt://${ipmqtt}:${portmqtt}`)
 
 
 router.post('/', async (req, res) => {
-  try {
-    const tm = new TransactionKsher(req.body)
-    await tm.save()
-    if (req.body.data.result == "SUCCESS") {
-      const dbDevice = await Device.findOne({ dname: req.body.data.device_id })
-      const p = parseFloat(req.body.data.total_fee) / 100
-      const now = dayjs()
-      const myobj = {
-        user_id: dbDevice.user_id,
-        dname: dbDevice.dname,
-        d: now.date(),
-        m: now.month() + 1,
-        y: now.year(),
-        t: dayjs().format(),
-        branch: dbDevice.group,
-        amount: p,
-        nonce_str: req.body.data.nonce_str,
-        run: false
-      }
-      sendESP(dbDevice, myobj)
-      Processing(dbDevice, myobj, req.body)
-    }
-  } catch (error) {
-
+  const now = dayjs()
+  const dbDevice = await Device.findOne({ dname: req.body.device_id })
+  const myobj = {
+    user_id: dbDevice.user_id,
+    dname: dbDevice.dname,
+    d: now.date(),
+    m: now.month() + 2,
+    y: now.year(),
+    t: dayjs().format(),
+    branch: 1,
+    amount: req.body.amount,
   }
+  Processing(myobj)
+
+  res.send({"response":"accepted"})
+  
 });
-
-
-/*
-    "code": 0,
-    "version": "3.0.0",
-    "status_code": "",
-    "msg": "ok",
-    "time_stamp": "2021-01-22T05: 19: 36.633951+08: 00",
-    "status_msg": "",
-    "data": {
-        "openid": "",
-        "channel_order_no": "",
-        "operator_id": "33531",
-        "cash_fee_type": "THB",
-        "ksher_order_no": 90020210122051821465169,
-        "nonce_str": "DHqgKHaPbipEbbJ15Y64ZETFJOyefqSL",
-        "time_end": "2021-01-22 04: 19: 35",
-        "fee_type": "THB",
-        "attach": "",
-        "rate": "0.000000",
-        "result": "SUCCESS",
-        "total_fee": 100,
-        "appid": "mch35306",
-        "order_no": 1611263900970,
-        "operation": "NATIVE-PAY",
-        "device_id": "10010101",
-        "cash_fee": 100,
-        "channel": "bbl_promptpay",
-        "mch_order_no": 1611263900970
-    },
-    "sign": "41a7dd3e926d3a0a4b8af75a1ae304fed97c5722fb747c15e58914c9ce2bc111207debd7622c20bfd83ddcaf57b67f98e335a6bb3fc7a7caa22b76243ec4ed44"
-    */
-
 
 async function sendESP(device, myobj) {
   if (myobj.amount == device.price1) {
@@ -116,16 +74,17 @@ async function sendESP(device, myobj) {
   }
 }
 
-async function Processing(device, myobj, result) {
+async function Processing(myobj) {
+
   const dbTransaction = new Transaction({
     user_id: myobj.user_id,
     dname: myobj.dname,
     branch: myobj.branch,
     amount: myobj.amount,
-    nonce_str: myobj.nonce_str,
     time: myobj.t
   })
   await dbTransaction.save()
+
   const ad = await Graph_allDay.findOneAndUpdate({
     user_id: myobj.user_id,
     d: myobj.d,

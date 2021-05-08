@@ -75,13 +75,6 @@
                             </a>
                         </li>
 
-                        <li class="sidebar-item ">
-                            <a href="/notrun" class='sidebar-link'>
-                                <i data-feather="alert-triangle" width="20"></i>
-                                <span>Office Device, Alert </span>
-                            </a>
-                        </li>
-
 
                         <li class="sidebar-item">
                             <a href="/info_transaction" class='sidebar-link'>
@@ -135,7 +128,7 @@
                                     <table class="table mb-0">
                                         <thead class="thead-dark">
                                             <tr>
-                                                <th>Group Shop</th>
+                                                <th>Branch</th>
                                                 <th>Device Name</th>
                                                 <th>STATUS</th>
                                                 <th>ACTION</th>
@@ -156,12 +149,13 @@
                                                 <h6 class="mb-1">${e.status}</h6>
                                             </td>
                                             <td >
-                                                <a href="/viewqrcode?dname=${e.dname}" class="btn btn-outline-success" >QRcode</a>
+                                               
                                                 <a href="/esp/esp_ok?dname=${e.dname}" class="btn btn-outline-warning">ทอสอบการเชื่อมต่อ</a>
                                                 <a href="/esp/esp_r?dname=${e.dname}" class="btn btn-outline-danger">reboot</a>
                                             </td>
                                         </tr>`)
                                                 });
+                                                // <a href="/viewqrcode?dname=${e.dname}" class="btn btn-outline-success" >QRcode</a>
                                             </script>
                                         </tbody>
                                     </table>
