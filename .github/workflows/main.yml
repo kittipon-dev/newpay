@@ -1,0 +1,25 @@
+name: Build & Deploy
+on:
+  push:
+    branches: [staging]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy NodeJS app
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+          host: ${{secrets.SSH_HOST}}
+          key: ${{secrets.SSH_KEY}}
+          username: ${{ secrets.SSH_USERNAME }}
+
+          script: |
+            cd dq
+            git checkout staging
+            git pull    
+            yarn
+            yarn build
+            pm2 delete dq           
+            pm2 start "yarn start" --name "dq"
+            echo 'Deployment successful to digital ocean'
